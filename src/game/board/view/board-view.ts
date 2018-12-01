@@ -2,8 +2,9 @@ import { Injectable } from '../../../injector';
 import GameService from "../../game-service";
 import {Canvas} from "./canvas";
 import BoardController from "../controller/board-controler";
-import { fromEvent } from 'rxjs';
-import { map } from 'rxjs/operators';
+
+import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight} from "./keyboard-listener";
+import {Subscription} from "rxjs";
 
 
 
@@ -13,16 +14,34 @@ export default class BoardView {
 
     private canvas: Canvas;
     private controller!: BoardController;
+    private keyListeners: Array<KeyboardListener>;
+    readonly keyDownSubscriptions: Array<Subscription>;
 
     constructor(private gs: GameService) {
         this.canvas = new Canvas();
+        this.keyListeners = [new KeyboardUp(), new KeyboardDown(), new KeyboardLeft(), new KeyboardRight()];
 
-        const source = fromEvent<KeyboardEvent>(document, 'keydown');
-        const keyPressed = source.pipe(map((event: KeyboardEvent) => event.key));
-        keyPressed.subscribe((key: string) => {
-            this.controller.handleKeypress(key);
+        this.keyDownSubscriptions = this.keyListeners.map((listener: KeyboardListener, index: number) => {
+            return this.createSubscription(listener, index);
         });
 
+        this.keyListeners.map((listener: KeyboardListener, index: number) => {
+            return listener.keyUp().subscribe((key: boolean) => {
+                if (key) {
+                    this.controller.stopKeypress(listener.keyName);
+                    this.keyDownSubscriptions[index] = this.createSubscription(listener, index);
+                }
+            });
+        });
+    }
+
+    private createSubscription(l: KeyboardListener, i: number) {
+        return l.keyPress().subscribe((key: boolean) => {
+            if (key) {
+                this.controller.handleKeypress(l.keyName);
+                this.keyDownSubscriptions[i].unsubscribe();
+            }
+        });
     }
 
     set Controller(c: BoardController) {

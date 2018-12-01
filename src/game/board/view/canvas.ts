@@ -6,9 +6,6 @@ export class Canvas {
 
     constructor() {
         this._canvas = document.createElement("canvas");
-        this._canvas.onkeypress = function() {
-            console.log('huj');
-        };
         this.insertToDocument();
     }
 

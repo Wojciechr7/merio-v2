@@ -13,9 +13,15 @@ export default class BoardController {
 
     public handleKeypress(key: string): void {
 
-        this.model.doSomething();
+        console.log(key);
 
-        this.view.updateCanvas();
+        //this.model.doSomething();
+
+        //this.view.updateCanvas();
+    }
+
+    public stopKeypress(key: string) {
+        console.log('stop', key);
     }
 
 
