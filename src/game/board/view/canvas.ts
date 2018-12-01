@@ -1,20 +1,20 @@
 
 
-export class Canvas {
+export default class Canvas {
 
-    private _canvas: HTMLElement;
+    readonly _canvas: HTMLElement;
 
-    constructor() {
-        this._canvas = document.createElement("canvas");
-        this.insertToDocument();
+    constructor(doc: HTMLDocument) {
+        this._canvas = doc.createElement("canvas");
+        this.insertToDocument(doc);
     }
 
     get Cvs(): HTMLElement {
         return this._canvas;
     }
 
-    private insertToDocument(): void {
-        const app = document.getElementById('App');
+    private insertToDocument(doc: HTMLDocument): void {
+        const app = doc.getElementById('App');
         app!.appendChild(this._canvas);
     }
 

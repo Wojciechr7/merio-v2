@@ -1,6 +1,6 @@
 import { Injectable } from '../../../injector';
 import GameService from "../../game-service";
-import {Canvas} from "./canvas";
+import Canvas from "./canvas";
 import BoardController from "../controller/board-controler";
 
 import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight} from "./keyboard-listener";
@@ -18,8 +18,8 @@ export default class BoardView {
     readonly keyDownSubscriptions: Array<Subscription>;
 
     constructor(private gs: GameService) {
-        this.canvas = new Canvas();
-        this.keyListeners = [new KeyboardUp(), new KeyboardDown(), new KeyboardLeft(), new KeyboardRight()];
+        this.canvas = new Canvas(document);
+        this.keyListeners = [new KeyboardUp(document), new KeyboardDown(document), new KeyboardLeft(document), new KeyboardRight(document)];
 
         this.keyDownSubscriptions = this.keyListeners.map((listener: KeyboardListener, index: number) => {
             return this.createSubscription(listener, index);

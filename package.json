@@ -5,17 +5,23 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ts-node node_modules/jasmine/bin/jasmine JASMINE_CONFIG_PATH=spec/support/jasmine.json"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jasmine": "^3.3.0",
+    "jasmine": "^3.3.0",
+    "jasmine-ts": "^0.3.0",
     "parcel-bundler": "^1.10.3",
     "sass": "^1.15.1",
+    "ts-node": "^7.0.1",
     "typescript": "^3.1.6"
   },
   "dependencies": {
+    "@types/jsdom": "^12.2.0",
+    "jsdom": "^13.0.0",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.3"
   }
