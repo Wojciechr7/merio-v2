@@ -14,6 +14,7 @@ export const Injector = new class {
     resolve<T>(Target: Constructor<T>): T {
         const requiredParams = Reflect.getMetadata('design:paramtypes', Target) || [];
         const resolvedParams = requiredParams.map((param: any) => Injector.resolve(param));
+        Target.prototype.Document = document;
         return new Target(...resolvedParams);
     }
 }();

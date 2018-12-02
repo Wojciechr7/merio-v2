@@ -18,10 +18,18 @@ export default class BoardView {
     private model!: BoardModel;
     private keyListeners: Array<KeyboardListener>;
     readonly keyDownSubscriptions: Array<Subscription>;
+    private document!: HTMLDocument;
 
-    constructor(private gs: GameService) {
-        this.canvas = new Canvas(document);
-        this.keyListeners = [new KeyboardUp(document), new KeyboardDown(document), new KeyboardLeft(document), new KeyboardRight(document)];
+    constructor(private gs?: GameService) {
+
+
+
+        this.canvas = new Canvas(this.document);
+        this.keyListeners = [
+            new KeyboardUp(this.document),
+            new KeyboardDown(this.document),
+            new KeyboardLeft(this.document),
+            new KeyboardRight(this.document)];
 
         this.keyDownSubscriptions = this.keyListeners.map((listener: KeyboardListener, index: number) => {
             return this.createSubscription(listener, index);
@@ -51,6 +59,9 @@ export default class BoardView {
     }
     set Model(m: BoardModel) {
         this.model = m;
+    }
+    set Document(d: HTMLDocument) {
+        this.document = d;
     }
 
     get Canvas(): HTMLElement {

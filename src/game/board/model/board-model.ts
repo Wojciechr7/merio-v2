@@ -11,7 +11,7 @@ export default class BoardModel implements EventProcessor {
 
     private controller!: BoardController;
 
-    constructor(private gs: GameService) {
+    constructor(private gs?: GameService) {
 
     }
 
