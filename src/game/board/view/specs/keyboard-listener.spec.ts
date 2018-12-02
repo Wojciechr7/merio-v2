@@ -4,7 +4,7 @@ import {JSDOM} from "jsdom";
 const dom = new JSDOM(`<div id="App"></div>`);
 
 
-import {KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight, KeyboardListener} from "./keyboard-listener";
+import {KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight, KeyboardListener} from "../keyboard-listener";
 
 
 const keyListeners: Array<KeyboardListener> = [

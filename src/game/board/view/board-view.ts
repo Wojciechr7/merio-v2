@@ -5,6 +5,7 @@ import BoardController from "../controller/board-controler";
 
 import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight} from "./keyboard-listener";
 import {Subscription} from "rxjs";
+import BoardModel from "../model/board-model";
 
 
 
@@ -14,6 +15,7 @@ export default class BoardView {
 
     private canvas: Canvas;
     private controller!: BoardController;
+    private model!: BoardModel;
     private keyListeners: Array<KeyboardListener>;
     readonly keyDownSubscriptions: Array<Subscription>;
 
@@ -38,7 +40,7 @@ export default class BoardView {
     private createSubscription(l: KeyboardListener, i: number) {
         return l.keyPress().subscribe((key: boolean) => {
             if (key) {
-                this.controller.handleKeypress(l.keyName);
+                this.model.processEvent(i);
                 this.keyDownSubscriptions[i].unsubscribe();
             }
         });
@@ -46,6 +48,9 @@ export default class BoardView {
 
     set Controller(c: BoardController) {
         this.controller = c;
+    }
+    set Model(m: BoardModel) {
+        this.model = m;
     }
 
     get Canvas(): HTMLElement {

@@ -1,5 +1,5 @@
 import "jasmine";
-import Canvas from "./canvas";
+import Canvas from "../canvas";
 import {JSDOM} from "jsdom";
 
 
