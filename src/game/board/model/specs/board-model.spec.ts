@@ -5,11 +5,12 @@ import BoardModel from "../board-model";
 import BoardView from "../../view/board-view";
 import BoardController from "../../controller/board-controler";
 import {MoveDownEvent, MoveLeftEvent, MoveRightEvent, MoveUpEvent} from "../../../common/game-event";
+import {KeyboardLeft, KeyboardRight, KeyboardUp} from "../../view/keyboard-listener";
 
 const dom = new JSDOM(`<div id="App"></div>`);
 
-
 BoardView.prototype.Document = dom.window.document;
+
 
 const boardModel = new BoardModel();
 const boardView = new BoardView();
@@ -67,5 +68,21 @@ describe("Process keyboard event", () => {
         spyOn(BoardController.prototype, 'processMoveRight');
         boardModel.processEvent(3);
         expect(boardController.processMoveRight).toHaveBeenCalledWith(new MoveRightEvent(3));
+    });
+});
+
+
+
+describe("Stop merio method", () => {
+    it("should set released-left as true", () => {
+        boardModel.released.left = false;
+        boardModel.stopMerio(new KeyboardLeft(dom.window.document));
+        expect(boardModel.released.left).toBe(true);
+    });
+
+    it("should set released-right as true", () => {
+        boardModel.released.right = false;
+        boardModel.stopMerio(new KeyboardRight(dom.window.document));
+        expect(boardModel.released.right).toBe(true);
     });
 });

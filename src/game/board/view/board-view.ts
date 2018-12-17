@@ -1,4 +1,4 @@
-import { Injectable } from '../../../injector';
+import {Injectable} from '../../../injector';
 import GameService from "../../game-service";
 import Canvas from "./canvas";
 import BoardController from "../controller/board-controler";
@@ -6,8 +6,8 @@ import BoardController from "../controller/board-controler";
 import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight} from "./keyboard-listener";
 import {Subscription} from "rxjs";
 import BoardModel from "../model/board-model";
-
-
+import {Iposition} from "../../common/interfaces/position.interface";
+import {SPRITE_SIZE} from "../../common/const";
 
 
 @Injectable()
@@ -19,12 +19,20 @@ export default class BoardView {
     private keyListeners: Array<KeyboardListener>;
     readonly keyDownSubscriptions: Array<Subscription>;
     private document!: HTMLDocument;
+    public merioImage: HTMLImageElement;
+
 
     constructor(private gs?: GameService) {
-
+        //this.merioImage = new Image();
+        this.merioImage = this.document.createElement('img');
+        this.merioImage.src = 'https://i.ibb.co/XYBHBRP/merio.png';
 
 
         this.canvas = new Canvas(this.document);
+
+
+
+
         this.keyListeners = [
             new KeyboardUp(this.document),
             new KeyboardDown(this.document),
@@ -38,8 +46,8 @@ export default class BoardView {
         this.keyListeners.map((listener: KeyboardListener, index: number) => {
             return listener.keyUp().subscribe((key: boolean) => {
                 if (key) {
-                    this.controller.stopKeypress(listener.keyName);
                     this.keyDownSubscriptions[index] = this.createSubscription(listener, index);
+                    this.model.processKeyUpEvent(listener);
                 }
             });
         });
@@ -54,26 +62,46 @@ export default class BoardView {
         });
     }
 
+
+
     set Controller(c: BoardController) {
         this.controller = c;
     }
+
     set Model(m: BoardModel) {
         this.model = m;
     }
+
     set Document(d: HTMLDocument) {
         this.document = d;
     }
 
-    get Canvas(): HTMLElement {
-        return this.canvas.Cvs;
+    public clearMerio(walk: any, pos: Iposition) {
+        //console.log('clear');
+        const data = {
+            ws: walk.side,
+            posx: pos.x - 1,
+            posy: pos.y,
+            size: SPRITE_SIZE.MERIO
+        };
+        this.canvas.Ctx.clearRect(data.ws * data.posx, data.posy, SPRITE_SIZE.MERIO, SPRITE_SIZE.MERIO + 5);
     }
 
-    public updateCanvas() {
-        console.log('update canvas');
+
+    public drawMerio(pos: Iposition): void {
+        const data = {
+            ws: this.model.Walk.side,
+            asx: this.model.ActualSprite.x,
+            asy: this.model.ActualSprite.y,
+            size: SPRITE_SIZE.MERIO
+        };
+        this.canvas.Ctx.save();
+        this.canvas.Ctx.scale(data.ws, 1);
+        this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, pos.x, pos.y, data.ws * data.size, data.size);
+        this.canvas.Ctx.restore();
+        requestAnimationFrame(this.drawMerio.bind(this, pos));
+
     }
-
-
-
 
 
 }

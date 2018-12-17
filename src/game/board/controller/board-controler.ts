@@ -1,58 +1,48 @@
 import BoardModel from "../model/board-model";
 import BoardView from "../view/board-view";
 import {Injectable} from "../../../injector";
-import {
-    GameEvent,
-    MoveUpEvent
-} from "../../common/game-event";
-
+import {MoveUpEvent} from "../../common/game-event";
+import {KeyboardListener} from "../view/keyboard-listener";
 
 
 @Injectable()
 export default class BoardController {
 
+
+
     constructor(private model: BoardModel, private view: BoardView) {
         view.Controller = this;
         view.Model = model;
         model.Controller = this;
+        model.View = view;
+        this.view.merioImage.onload = () => {
+            this.view.drawMerio(this.model.MerioPos);
+        };
 
 
     }
 
     public processMoveUp(event: MoveUpEvent) {
-        console.log(event);
-        this.model.doSomething();
-        this.view.updateCanvas();
+        if (!this.model.isJumping()) {
+            this.model.jumpAnimation();
+            this.model.jump();
+        }
+
     }
     public processMoveDown(event: MoveUpEvent) {
         console.log(event);
-        this.model.doSomething();
-        this.view.updateCanvas();
     }
     public processMoveLeft(event: MoveUpEvent) {
-        console.log(event);
-        this.model.doSomething();
-        this.view.updateCanvas();
+        this.model.walkLeftSwitchSprite();
+        this.model.walkLeft();
     }
     public processMoveRight(event: MoveUpEvent) {
-        console.log(event);
-        this.model.doSomething();
-        this.view.updateCanvas();
+        this.model.walkRightSwitchSprite();
+        this.model.walkRight();
     }
 
-
-
-    public handleKeypress(key: GameEvent): void {
-
-        console.log(key);
-
-        //this.model.doSomething();
-
-        //this.view.updateCanvas();
-    }
-
-    public stopKeypress(key: string) {
-        console.log('stop', key);
+    public stopKeypress(listener: KeyboardListener) {
+        this.model.stopMerio(listener);
     }
 
 
