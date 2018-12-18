@@ -31,19 +31,6 @@ export default class Merio {
 
         this.onAir = false;
 
-
-    }
-
-    get ActualSprite(): Iposition {
-        return this.actualSprite;
-    }
-
-    get Walk(): WalkSide {
-        return this.walk;
-    }
-
-    get Pos(): Iposition {
-        return this.pos;
     }
 
     public isJumping(): boolean {
@@ -68,10 +55,8 @@ export default class Merio {
             if (this.pos.x < 500 - SPRITE_SIZE.MERIO) {
                 this.pos.x++;
             }
-
             this.pos.x *= this.walk.side;
         }
-
     }
 
     public walkLeft(): void {
@@ -97,7 +82,7 @@ export default class Merio {
             this.jumpHeight--;
         }
 
-        if (this.pos.y === 263) {
+        if (this.pos.y === POSITION.START.y) {
             if (this.released.right && !this.released.left) {
                 this.onAir = false;
             } else if (!this.released.right && this.released.left) {
@@ -113,8 +98,7 @@ export default class Merio {
     }
 
     public jumpSwitchSprite(): void {
-        this.actualSprite.x = 124;
-        this.actualSprite.y = 215;
+        this.actualSprite = Object.assign({}, SPRITES.JUMP);
     }
 
     public walkLeftSwitchSprite(): void {
@@ -127,7 +111,6 @@ export default class Merio {
         } else if (!this.onAir && !this.released.right){
             this.actualSprite = Object.assign({}, SPRITES.STAND);
         }
-
     }
 
     public walkRightSwitchSprite(): void {
@@ -140,6 +123,18 @@ export default class Merio {
         } else if (!this.onAir && !this.released.left) {
             this.actualSprite = Object.assign({}, SPRITES.STAND);
         }
+    }
+
+    get ActualSprite(): Iposition {
+        return this.actualSprite;
+    }
+
+    get Walk(): WalkSide {
+        return this.walk;
+    }
+
+    get Pos(): Iposition {
+        return this.pos;
     }
 
 

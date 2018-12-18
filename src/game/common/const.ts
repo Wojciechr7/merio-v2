@@ -14,6 +14,10 @@ export const SPRITES = {
     WALK_3: {
         x: 85,
         y: 215
+    },
+    JUMP: {
+        x: 124,
+        y: 215
     }
 };
 

@@ -1,6 +1,5 @@
 import {Injectable} from '../../../injector';
 import GameService from "../../game-service";
-
 import BoardController from "../controller/board-controler";
 import {Key} from "../../common/key";
 import {GameEventType, MoveDownEvent, MoveLeftEvent, MoveRightEvent, MoveUpEvent} from "../../common/game-event";
@@ -43,7 +42,6 @@ export default class BoardModel implements EventProcessor {
         this.merio = new Merio(this.released);
 
     }
-
 
     public processEvent(type: Key): void {
         switch (parseInt(type.toString())) {
@@ -91,12 +89,9 @@ export default class BoardModel implements EventProcessor {
     private fall() {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
         if (this.merio.fall()) {
-
             this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
         }
-
     }
-
 
     public walkLeftSwitchSprite() {
             //console.log('walk left anim');
@@ -108,26 +103,21 @@ export default class BoardModel implements EventProcessor {
             //console.log('walk right anim');
             this.merio.walkRightSwitchSprite();
             this.intervals.moveRightAnimation = setTimeout(this.walkRightSwitchSprite.bind(this), FPS.WALK);
-
     }
     public walkLeft() {
             //console.log('walk left');
             this.view.clearMerio(this.merio.Walk, this.merio.Pos);
             this.released.left = false;
             this.merio.walkLeft();
-
             this.intervals.moveLeft = setTimeout(this.walkLeft.bind(this), FPS.MOVE);
-
     }
 
     public walkRight() {
             //console.log('walk right');
             this.view.clearMerio(this.merio.Walk, this.merio.Pos);
             this.released.right = false;
-
             this.merio.walkRight();
             this.intervals.moveRight = setTimeout(this.walkRight.bind(this), FPS.MOVE);
-
     }
 
     public jump(): void {
@@ -140,13 +130,12 @@ export default class BoardModel implements EventProcessor {
         }
     }
 
-    public isJumping(): boolean {
-        return this.merio.isJumping();
+    public jumpAnimation(): void {
+        this.merio.jumpSwitchSprite();
     }
 
-    public jumpAnimation() {
-
-        this.merio.jumpSwitchSprite();
+    public isJumping(): boolean {
+        return this.merio.isJumping();
     }
 
     set Controller(c: BoardController) {
@@ -165,7 +154,7 @@ export default class BoardModel implements EventProcessor {
         return this.merio.Pos;
     }
 
-    get ActualSprite() {
+    get ActualSprite(): Iposition {
         return this.merio.ActualSprite;
     }
 
