@@ -10,14 +10,28 @@ html, body {
     display: flex;
 
     canvas {
-      width: 1000px;
-      height: 600px;
-      background: antiquewhite;
+      width: 800px;
+      height: 500px;
+      background: url("~src/images/bg.jpg") repeat-x;
+      background-size: cover;
       margin: auto;
+      animation: moveIt 10s infinite ease-in-out;
     }
   }
 
 
 
+}
+
+@keyframes moveIt {
+  0% {
+    background-position: left;
+  }
+  50% {
+    background-position: right;
+  }
+  100% {
+    background-position: left;
+  }
 }
 

@@ -7,7 +7,7 @@ import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight}
 import {Subscription} from "rxjs";
 import BoardModel from "../model/board-model";
 import {Iposition} from "../../common/interfaces/position.interface";
-import {SPRITE_SIZE} from "../../common/const";
+import {POSITION, SPRITE_SIZE} from "../../common/const";
 
 
 @Injectable()
@@ -89,16 +89,30 @@ export default class BoardView {
 
 
     public drawMerio(pos: Iposition): void {
-        const data = {
+        let data = {
             ws: this.model.Walk.side,
             asx: this.model.ActualSprite.x,
             asy: this.model.ActualSprite.y,
             size: SPRITE_SIZE.MERIO
         };
+        data.size = SPRITE_SIZE.TUBE;
+        data.asx = 392;
+        data.asy = 320;
+        this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, POSITION.TUBE.x, POSITION.TUBE.y, data.size, data.size);
+
+        data = {
+            ws: this.model.Walk.side,
+            asx: this.model.ActualSprite.x,
+            asy: this.model.ActualSprite.y,
+            size: SPRITE_SIZE.MERIO
+        };
+
         this.canvas.Ctx.save();
         this.canvas.Ctx.scale(data.ws, 1);
+
         this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, pos.x, pos.y, data.ws * data.size, data.size);
         this.canvas.Ctx.restore();
+
         requestAnimationFrame(this.drawMerio.bind(this, pos));
 
     }

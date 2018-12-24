@@ -6,12 +6,14 @@ import {GameEventType, MoveDownEvent, MoveLeftEvent, MoveRightEvent, MoveUpEvent
 import EventProcessor from "../../common/interfaces/event-processor.interface";
 import {Iposition} from "../../common/interfaces/position.interface";
 import {Iinterval} from "../../common/interfaces/interval.interface";
-import {FPS} from "../../common/const";
+import {FPS, POSITION} from "../../common/const";
 import {IReleasedKeys} from "../../common/interfaces/released.interface";
 import Merio from "./merio";
 import {KeyboardListener} from "../view/keyboard-listener";
 import BoardView from "../view/board-view";
 import {WalkSide} from "../../common/interfaces/walk.interface";
+import {CollisionDetector} from "./collision-detector";
+import {ICollision} from "../../common/interfaces/collision.interface";
 
 @Injectable()
 export default class BoardModel implements EventProcessor {
@@ -21,6 +23,8 @@ export default class BoardModel implements EventProcessor {
     readonly released: IReleasedKeys;
     private merio: Merio;
     private intervals: Iinterval;
+    private collisionDetector: CollisionDetector;
+    private collisions: ICollision;
 
 
     constructor(private gs?: GameService) {
@@ -40,6 +44,8 @@ export default class BoardModel implements EventProcessor {
         };
 
         this.merio = new Merio(this.released);
+        this.collisionDetector = new CollisionDetector(this.merio.Pos);
+        this.collisions = this.collisionDetector.init();
 
     }
 
@@ -68,17 +74,29 @@ export default class BoardModel implements EventProcessor {
         switch (listener.keyName) {
             case 'ArrowLeft':
                 clearTimeout(this.intervals.moveLeftAnimation);
+                this.intervals.moveLeftAnimation = undefined;
                 clearTimeout(this.intervals.moveLeft);
+                this.intervals.moveLeft = undefined;
                 this.released.left = true;
+                this.collisions.right = false;
+                this.view.clearMerio(this.merio.Walk, this.merio.Pos);
                 break;
             case 'ArrowRight':
                 clearTimeout(this.intervals.moveRightAnimation);
+                this.intervals.moveRightAnimation = undefined;
                 clearTimeout(this.intervals.moveRight);
+                this.intervals.moveRight = undefined;
                 this.released.right = true;
+                this.collisions.left = false;
+                this.view.clearMerio(this.merio.Walk, this.merio.Pos);
                 break;
             case 'ArrowUp':
                 clearTimeout(this.intervals.jump);
+                this.intervals.jump = undefined;
                 this.fall();
+                break;
+            case 'ArrowDown':
+                console.log(this.intervals);
                 break;
         }
         if (listener.keyName !== 'ArrowUp') {
@@ -88,44 +106,91 @@ export default class BoardModel implements EventProcessor {
 
     private fall() {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
-        if (this.merio.fall()) {
-            this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
-        }
+        //if (!this.collisions.bottom) {
+        this.collisions.bottom = !!this.collisionDetector.detect();
+            if (this.merio.fall()) {
+                this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
+            } else {
+                clearTimeout(this.intervals.fall);
+                this.intervals.fall = undefined;
+            }
+        //}
+
+
     }
 
     public walkLeftSwitchSprite() {
-            //console.log('walk left anim');
-            this.merio.walkLeftSwitchSprite();
-            this.intervals.moveLeftAnimation = setTimeout(this.walkLeftSwitchSprite.bind(this), FPS.WALK);
+        //console.log('walk left anim');
+        this.merio.walkLeftSwitchSprite();
+        this.intervals.moveLeftAnimation = setTimeout(this.walkLeftSwitchSprite.bind(this), FPS.WALK);
+
     }
 
     public walkRightSwitchSprite() {
-            //console.log('walk right anim');
-            this.merio.walkRightSwitchSprite();
-            this.intervals.moveRightAnimation = setTimeout(this.walkRightSwitchSprite.bind(this), FPS.WALK);
+        //console.log('walk right anim');
+        this.merio.walkRightSwitchSprite();
+        this.intervals.moveRightAnimation = setTimeout(this.walkRightSwitchSprite.bind(this), FPS.WALK);
+
     }
+
     public walkLeft() {
-            //console.log('walk left');
-            this.view.clearMerio(this.merio.Walk, this.merio.Pos);
+        this.collisions.right = false;
+        this.view.clearMerio(this.merio.Walk, this.merio.Pos);
+
+        if (!this.collisions.left) {
             this.released.left = false;
             this.merio.walkLeft();
-            this.intervals.moveLeft = setTimeout(this.walkLeft.bind(this), FPS.MOVE);
+        }
+
+        this.collisions.left = !!this.collisionDetector.detect();
+        this.fallFromObject('left');
+        this.intervals.moveLeft = setTimeout(this.walkLeft.bind(this), FPS.MOVE);
     }
 
     public walkRight() {
-            //console.log('walk right');
-            this.view.clearMerio(this.merio.Walk, this.merio.Pos);
+        this.collisions.left = false;
+        this.view.clearMerio(this.merio.Walk, this.merio.Pos);
+
+        if (!this.collisions.right) {
             this.released.right = false;
             this.merio.walkRight();
-            this.intervals.moveRight = setTimeout(this.walkRight.bind(this), FPS.MOVE);
+        }
+
+        this.collisions.right = !!this.collisionDetector.detect();
+        this.fallFromObject('right');
+        this.intervals.moveRight = setTimeout(this.walkRight.bind(this), FPS.MOVE);
+    }
+
+    private fallFromObject(side: string): void {
+        if (side === 'right') {
+            if (this.collisions.right && this.merio.jumpedOnTube) {
+                if (this.merio.isJumping()) {
+                    this.fall();
+                    this.merio.jumpSwitchSprite();
+                    this.merio.jumpedOnTube = false;
+                    this.collisions.right = false;
+                }
+            }
+        } else if (side === 'left') {
+            if (this.collisions.left && this.merio.jumpedOnTube) {
+                if (this.merio.isJumping()) {
+                    this.fall();
+                    this.merio.jumpSwitchSprite();
+                    this.merio.jumpedOnTube = false;
+                    this.collisions.left = false;
+                }
+            }
+        }
     }
 
     public jump(): void {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
+        let msg: string;
         if (this.merio.jump()) {
             this.intervals.jump = setTimeout(this.jump.bind(this), FPS.JUMP);
         } else {
             clearTimeout(this.intervals.jump);
+            this.intervals.jump = undefined;
             this.fall();
         }
     }
@@ -150,6 +215,7 @@ export default class BoardModel implements EventProcessor {
     get Walk(): WalkSide {
         return this.merio.Walk;
     }
+
     get MerioPos(): Iposition {
         return this.merio.Pos;
     }

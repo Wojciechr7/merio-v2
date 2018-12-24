@@ -15,20 +15,21 @@ export default class Merio {
     private released: IReleasedKeys;
     private jumpHeight: number;
     private walkAnimationIndex: number;
+    public jumpedOnTube: boolean;
+    private lastFloor: string;
 
 
     constructor(released: IReleasedKeys) {
         this.released = released;
         this.jumpHeight = 0;
         this.walkAnimationIndex = 0;
-
+        this.jumpedOnTube = false;
+        this.lastFloor = 'from ground';
         this.pos = Object.assign({}, POSITION.START);
         this.walk = {
             side: 1
         };
-
         this.actualSprite = Object.assign({}, SPRITES.STAND);
-
         this.onAir = false;
 
     }
@@ -71,30 +72,44 @@ export default class Merio {
     }
 
     public jump(): boolean {
-        this.jumpHeight = this.jumpHeight === 100 ? this.jumpHeight : this.jumpHeight + 10;
+        this.jumpedOnTube = false;
+        if (this.lastFloor === 'from ground') {
+            return this.determineJumpHeight(100);
+        } else {
+            return this.determineJumpHeight(100 + SPRITE_SIZE.TUBE);
+        }
+    }
+
+    private determineJumpHeight(val: number): boolean {
+        this.jumpHeight = this.jumpHeight === val ? this.jumpHeight : this.jumpHeight + 10;
         this.pos.y -= 10;
-        return this.jumpHeight !== 100;
+        return this.jumpHeight !== val;
     }
 
     public fall(): boolean {
-        if (this.onAir) {
-            this.pos.y++;
-            this.jumpHeight--;
+        if ((this.pos.y === POSITION.TUBE.y - SPRITE_SIZE.MERIO + 1) && Math.abs(this.pos.x) > POSITION.TUBE.x - SPRITE_SIZE.MERIO && Math.abs(this.pos.x) < POSITION.TUBE.x + SPRITE_SIZE.TUBE) {
+            this.jumpedOnTube = true;
+            return this.fellOnFloor('from tube');
         }
 
         if (this.pos.y === POSITION.START.y) {
-            if (this.released.right && !this.released.left) {
-                this.onAir = false;
-            } else if (!this.released.right && this.released.left) {
-                this.onAir = false;
-            }
-
-            this.onAir = false;
-            this.actualSprite = Object.assign({}, SPRITES.STAND);
-            return false;
-
+            return this.fellOnFloor('from ground');
         }
+        this.pos.y++;
+        this.jumpHeight--;
         return true;
+    }
+
+    private fellOnFloor(last: string): boolean {
+        if (this.released.right && !this.released.left) {
+            this.onAir = false;
+        } else if (!this.released.right && this.released.left) {
+            this.onAir = false;
+        }
+        this.onAir = false;
+        this.actualSprite = Object.assign({}, SPRITES.STAND);
+        this.lastFloor = last;
+        return false;
     }
 
     public jumpSwitchSprite(): void {
@@ -131,6 +146,9 @@ export default class Merio {
 
     get Walk(): WalkSide {
         return this.walk;
+    }
+    get OnAir(): boolean {
+        return this.onAir;
     }
 
     get Pos(): Iposition {

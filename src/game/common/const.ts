@@ -25,11 +25,16 @@ export const POSITION = {
     START: {
         x: 0,
         y: 263
+    },
+    TUBE: {
+        x: 200,
+        y: 238
     }
 };
 
 export const SPRITE_SIZE = {
-    MERIO: 38
+    MERIO: 38,
+    TUBE: 62
 };
 
 export const FPS = {
