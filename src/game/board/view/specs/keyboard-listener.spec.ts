@@ -1,10 +1,8 @@
 import "jasmine";
 import {JSDOM} from "jsdom";
+import {KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight, KeyboardListener} from "../keyboard-listener";
 
 const dom = new JSDOM(`<div id="App"></div>`);
-
-
-import {KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight, KeyboardListener} from "../keyboard-listener";
 
 
 const keyListeners: Array<KeyboardListener> = [
@@ -30,94 +28,82 @@ describe("Keyboard Listener name", () => {
 });
 
 
-
-describe("Keyboard-ArrowUp press listener", () => {
-    const subscribent = keyListeners[0].keyPress().subscribe((key: boolean) => {
-        it("should return true", () => {
+describe("Keyboard press listener", () => {
+    it("ArrowUp should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[0].keyPress().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowUp'}));
+        subscriber.unsubscribe();
     });
-});
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowUp'}));
 
-
-describe("Keyboard-ArrowDown press listener", () => {
-    const subscribent = keyListeners[1].keyPress().subscribe((key: boolean) => {
-        it("should return true", () => {
+    it("ArrowDown should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[1].keyPress().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowDown'}));
+        subscriber.unsubscribe();
     });
-});
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowDown'}));
 
-describe("Keyboard-ArrowLeft press listener", () => {
-    const subscribent = keyListeners[2].keyPress().subscribe((key: boolean) => {
-        it("should return true", () => {
+    it("ArrowLeft should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[2].keyPress().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowLeft'}));
+        subscriber.unsubscribe();
     });
-});
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowLeft'}));
 
-
-
-describe("Keyboard-ArrowRight press listener", () => {
-    const subscribent = keyListeners[3].keyPress().subscribe((key: boolean) => {
-        it("should return true", () => {
+    it("ArrowRight should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[3].keyPress().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowRight'}));
+        subscriber.unsubscribe();
     });
+
 });
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keydown', {key: 'ArrowRight'}));
 
 
-
-
-
-describe("Keyboard-ArrowUp release listener", () => {
-    const subscribent = keyListeners[0].keyUp().subscribe((key: boolean) => {
-        it("should return true", () => {
+describe("Keyboard release listener", () => {
+    it("ArrowUp should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[0].keyUp().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowUp'}));
+        subscriber.unsubscribe();
     });
-});
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowUp'}));
 
-
-
-describe("Keyboard-ArrowDown release listener", () => {
-    const subscribent = keyListeners[1].keyUp().subscribe((key: boolean) => {
-        it("should return true", () => {
+    it("ArrowDown should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[1].keyUp().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowDown'}));
+        subscriber.unsubscribe();
     });
-});
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowDown'}));
 
-describe("Keyboard-ArrowLeft release listener", () => {
-    const subscribent = keyListeners[2].keyUp().subscribe((key: boolean) => {
-        it("should return true", () => {
+    it("ArrowLeft should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[2].keyUp().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowLeft'}));
+        subscriber.unsubscribe();
     });
-});
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowLeft'}));
 
-
-
-describe("Keyboard-ArrowRight release listener", () => {
-    const subscribent = keyListeners[3].keyUp().subscribe((key: boolean) => {
-        it("should return true", () => {
+    it("ArrowRight should return true", (done: DoneFn) => {
+        const subscriber = keyListeners[3].keyUp().subscribe((key: boolean) => {
             expect(key).toBe(true);
+            done();
         });
-        subscribent.unsubscribe();
+        dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowRight'}));
+        subscriber.unsubscribe();
     });
+
 });
-dom.window.document.dispatchEvent(new dom.window.KeyboardEvent('keyup', {key: 'ArrowRight'}));
+

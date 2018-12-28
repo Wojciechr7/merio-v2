@@ -25,11 +25,11 @@ export default class Merio {
         this.walkAnimationIndex = 0;
         this.jumpedOnTube = false;
         this.lastFloor = 'from ground';
-        this.pos = Object.assign({}, POSITION.START);
+        this.pos = {...POSITION.START};
         this.walk = {
             side: 1
         };
-        this.actualSprite = Object.assign({}, SPRITES.STAND);
+        this.actualSprite = {...SPRITES.STAND};
         this.onAir = false;
 
     }
@@ -45,7 +45,7 @@ export default class Merio {
 
     public resetSprite(): void {
         if (!this.onAir) {
-            this.actualSprite = Object.assign({}, SPRITES.STAND);
+            this.actualSprite = {...SPRITES.STAND};
         }
     }
 
@@ -107,24 +107,24 @@ export default class Merio {
             this.onAir = false;
         }
         this.onAir = false;
-        this.actualSprite = Object.assign({}, SPRITES.STAND);
+        this.actualSprite = {...SPRITES.STAND};
         this.lastFloor = last;
         return false;
     }
 
     public jumpSwitchSprite(): void {
-        this.actualSprite = Object.assign({}, SPRITES.JUMP);
+        this.actualSprite = {...SPRITES.JUMP};
     }
 
     public walkLeftSwitchSprite(): void {
         const moves = [SPRITES.WALK_1, SPRITES.WALK_2, SPRITES.WALK_3];
 
         if (!this.onAir && this.released.right) {
-            this.actualSprite = Object.assign({}, moves[this.walkAnimationIndex]);
+            this.actualSprite = {...moves[this.walkAnimationIndex]};
 
             this.walkAnimationIndex = this.walkAnimationIndex === 2 ? 0 : this.walkAnimationIndex + 1;
         } else if (!this.onAir && !this.released.right){
-            this.actualSprite = Object.assign({}, SPRITES.STAND);
+            this.actualSprite = {...SPRITES.STAND};
         }
     }
 
@@ -132,11 +132,11 @@ export default class Merio {
         const moves = [SPRITES.WALK_1, SPRITES.WALK_2, SPRITES.WALK_3];
 
         if (!this.onAir && this.released.left) {
-            this.actualSprite = Object.assign({}, moves[this.walkAnimationIndex]);
+            this.actualSprite = {...moves[this.walkAnimationIndex]};
 
             this.walkAnimationIndex = this.walkAnimationIndex === 2 ? 0 : this.walkAnimationIndex + 1;
         } else if (!this.onAir && !this.released.left) {
-            this.actualSprite = Object.assign({}, SPRITES.STAND);
+            this.actualSprite = {...SPRITES.STAND};
         }
     }
 

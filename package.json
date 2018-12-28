@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
+    "predeploy": "parcel build index.html --public-url /merio-v2",
+    "deploy": "gh-pages -d dist",
     "test": "ts-node node_modules/jasmine/bin/jasmine JASMINE_CONFIG_PATH=spec/support/jasmine.json"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jasmine": "^3.3.0",
+    "@types/jasmine": "^3.3.5",
+    "gh-pages": "^2.0.1",
     "jasmine": "^3.3.1",
     "jasmine-ts": "^0.3.0",
     "parcel-bundler": "^1.10.3",
