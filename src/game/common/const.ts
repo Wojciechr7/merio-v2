@@ -42,3 +42,8 @@ export const FPS = {
     MOVE: 1,
     JUMP: 10
 };
+
+export const CANVAS = {
+  WIDTH: 500,
+  HEIGHT: 300
+};

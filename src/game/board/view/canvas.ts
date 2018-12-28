@@ -1,15 +1,16 @@
+import {CANVAS} from "../../common/const";
 
 export default class Canvas {
 
-    private _canvas: HTMLCanvasElement;
-    private ctx: CanvasRenderingContext2D;
+    readonly _canvas: HTMLCanvasElement;
+    readonly ctx: CanvasRenderingContext2D;
 
 
     constructor(doc: HTMLDocument) {
         this._canvas = doc.createElement("canvas");
         this._canvas.setAttribute("id", "canvas");
-        this._canvas.width = 500;
-        this._canvas.height = 300;
+        this._canvas.width = CANVAS.WIDTH;
+        this._canvas.height = CANVAS.HEIGHT;
         this.insertToDocument(doc);
         this.ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
 

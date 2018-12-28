@@ -1,5 +1,5 @@
 import {Iposition} from "../../common/interfaces/position.interface";
-import {POSITION, SPRITE_SIZE, SPRITES} from "../../common/const";
+import {CANVAS, POSITION, SPRITE_SIZE, SPRITES} from "../../common/const";
 import {IReleasedKeys} from "../../common/interfaces/released.interface";
 import {WalkSide} from "../../common/interfaces/walk.interface";
 
@@ -53,7 +53,7 @@ export default class Merio {
         if (this.released.left) {
             this.walk.side = 1;
             this.pos.x = Math.abs(this.pos.x);
-            if (this.pos.x < 500 - SPRITE_SIZE.MERIO) {
+            if (this.pos.x < CANVAS.WIDTH - SPRITE_SIZE.MERIO) {
                 this.pos.x++;
             }
             this.pos.x *= this.walk.side;

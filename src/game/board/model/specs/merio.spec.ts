@@ -8,7 +8,7 @@ const releasedMock = {
 };
 
 describe("isJumping method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
 
     let isJumping: boolean;
     beforeEach(() => {
@@ -26,7 +26,7 @@ describe("isJumping method", () => {
 
 
 describe("Reset sprite method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     beforeEach(() => merio.resetSprite());
     it("should reset sprite to stand sprite x value", () => {
         expect(merio.ActualSprite.x).toBe(SPRITES.STAND.x);
@@ -37,7 +37,7 @@ describe("Reset sprite method", () => {
 });
 
 describe("Walk right method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     beforeEach(() => merio.walkRight());
 
     it("should increment position x by 1", () => {
@@ -46,7 +46,7 @@ describe("Walk right method", () => {
 });
 
 describe("Walk left method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     beforeEach(() => merio.walkLeft());
     it("should decrement position x by 1", () => {
         expect(merio.Pos.x).toEqual(merio.walk.side * POSITION.START.x);
@@ -55,7 +55,7 @@ describe("Walk left method", () => {
 
 
 describe("Jump method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     it("should return true", () => {
         expect(merio.jump()).toBe(true);
     });
@@ -65,7 +65,7 @@ describe("Jump method", () => {
 });
 
 describe("Fall method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     const positionBefore = merio.Pos.y;
     it("should return false", () => {
         expect(merio.fall()).toBe(false);
@@ -77,7 +77,7 @@ describe("Fall method", () => {
 });
 
 describe("JumpSwitchSprite method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     beforeEach(() => merio.jumpSwitchSprite());
     it("should set actualSprite x to constant jump sprite x", () => {
         expect(merio.ActualSprite.x).toEqual(SPRITES.JUMP.x);
@@ -89,7 +89,7 @@ describe("JumpSwitchSprite method", () => {
 });
 
 describe("walkLeftSwitchSprite method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     beforeEach(() => merio.walkLeftSwitchSprite());
 
     it("should set actualSprite coordinates to WALK_1 constant", () => {
@@ -99,7 +99,7 @@ describe("walkLeftSwitchSprite method", () => {
 });
 
 describe("walkRightSwitchSprite method", () => {
-    const merio = new Merio(Object.assign(releasedMock));
+    const merio = new Merio({...releasedMock});
     beforeEach(() => merio.walkRightSwitchSprite());
 
     it("should set actualSprite coordinates to WALK_1 constant", () => {
