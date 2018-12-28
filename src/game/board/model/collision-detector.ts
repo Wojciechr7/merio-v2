@@ -35,7 +35,6 @@ export class CollisionDetector {
         let response = new SAT.Response();
         SAT.testPolygonPolygon(this.merioPolygon, this.tubePolygon, response);
         //console.log(response);
-
         return response.overlap === 0 && response.a;
     }
 

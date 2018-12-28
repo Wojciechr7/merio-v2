@@ -6,7 +6,7 @@ import {GameEventType, MoveDownEvent, MoveLeftEvent, MoveRightEvent, MoveUpEvent
 import EventProcessor from "../../common/interfaces/event-processor.interface";
 import {Iposition} from "../../common/interfaces/position.interface";
 import {Iinterval} from "../../common/interfaces/interval.interface";
-import {FPS, POSITION} from "../../common/const";
+import {FPS} from "../../common/const";
 import {IReleasedKeys} from "../../common/interfaces/released.interface";
 import Merio from "./merio";
 import {KeyboardListener} from "../view/keyboard-listener";
@@ -22,7 +22,7 @@ export default class BoardModel implements EventProcessor {
     private view!: BoardView;
     readonly released: IReleasedKeys;
     private merio: Merio;
-    private intervals: Iinterval;
+    readonly intervals: Iinterval;
     private collisionDetector: CollisionDetector;
     private collisions: ICollision;
 
@@ -106,7 +106,6 @@ export default class BoardModel implements EventProcessor {
 
     private fall() {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
-        //if (!this.collisions.bottom) {
         this.collisions.bottom = !!this.collisionDetector.detect();
             if (this.merio.fall()) {
                 this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
@@ -114,9 +113,6 @@ export default class BoardModel implements EventProcessor {
                 clearTimeout(this.intervals.fall);
                 this.intervals.fall = undefined;
             }
-        //}
-
-
     }
 
     public walkLeftSwitchSprite() {
@@ -165,19 +161,19 @@ export default class BoardModel implements EventProcessor {
         if (side === 'right') {
             if (this.collisions.right && this.merio.jumpedOnTube) {
                 if (this.merio.isJumping()) {
+                    this.collisions.right = false;
                     this.fall();
                     this.merio.jumpSwitchSprite();
                     this.merio.jumpedOnTube = false;
-                    this.collisions.right = false;
                 }
             }
         } else if (side === 'left') {
             if (this.collisions.left && this.merio.jumpedOnTube) {
                 if (this.merio.isJumping()) {
+                    this.collisions.left = false;
                     this.fall();
                     this.merio.jumpSwitchSprite();
                     this.merio.jumpedOnTube = false;
-                    this.collisions.left = false;
                 }
             }
         }
@@ -185,7 +181,6 @@ export default class BoardModel implements EventProcessor {
 
     public jump(): void {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
-        let msg: string;
         if (this.merio.jump()) {
             this.intervals.jump = setTimeout(this.jump.bind(this), FPS.JUMP);
         } else {
