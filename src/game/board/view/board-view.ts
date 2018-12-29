@@ -76,41 +76,24 @@ export default class BoardView {
 
     public clearMerio(walk: WalkSide, {x, y}: Iposition): void {
         //console.log('clear');
-        const data = {
-            ws: walk.side,
-            posx: x - 1,
-            posy: y,
-            size: SPRITE_SIZE.MERIO
-        };
-        this.canvas.Ctx.clearRect(data.ws * data.posx, data.posy, SPRITE_SIZE.MERIO, SPRITE_SIZE.MERIO + 5);
+
+        this.canvas.Ctx.clearRect(walk.side * x - 1, y, SPRITE_SIZE.MERIO, SPRITE_SIZE.MERIO + 5);
     }
 
 
     public drawBoard(pos: Iposition): void {
-        let data = {
-            ws: this.model.Walk.side,
-            asx: SPRITES.TUBE.x,
-            asy: SPRITES.TUBE.y,
-            size: SPRITE_SIZE.TUBE
-        };
 
-        this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, POSITION.TUBE.x, POSITION.TUBE.y, data.size, data.size);
-
-        data = {
-            ws: this.model.Walk.side,
-            asx: this.model.ActualSprite.x,
-            asy: this.model.ActualSprite.y,
-            size: SPRITE_SIZE.MERIO
-        };
+        // draw tube
+        this.canvas.Ctx.drawImage(this.merioImage, SPRITES.TUBE.x, SPRITES.TUBE.y, SPRITE_SIZE.TUBE, SPRITE_SIZE.TUBE, POSITION.TUBE.x, POSITION.TUBE.y, SPRITE_SIZE.TUBE, SPRITE_SIZE.TUBE);
 
         this.canvas.Ctx.save();
-        this.canvas.Ctx.scale(data.ws, 1);
-        const {x, y} = pos;
-        this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, x, y, data.ws * data.size, data.size);
+        this.canvas.Ctx.scale(this.model.Walk.side, 1);
+
+        // draw merio
+        this.canvas.Ctx.drawImage(this.merioImage, this.model.ActualSprite.x, this.model.ActualSprite.y, SPRITE_SIZE.MERIO, SPRITE_SIZE.MERIO, pos.x, pos.y, this.model.Walk.side * SPRITE_SIZE.MERIO, SPRITE_SIZE.MERIO);
         this.canvas.Ctx.restore();
 
         requestAnimationFrame(this.drawBoard.bind(this, pos));
-
     }
 
 
