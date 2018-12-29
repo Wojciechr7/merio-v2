@@ -1,17 +1,17 @@
-import {Iposition} from "../../common/interfaces/position.interface";
+import {Iposition} from "../../../common/interfaces/position.interface";
 import SAT from 'sat';
-import {POSITION} from "../../common/const";
-import {ICollision} from "../../common/interfaces/collision.interface";
+import {POSITION} from "../../../common/const";
+import {ICollision} from "../../../common/interfaces/collision.interface";
 import Polygon = SAT.Polygon;
 
 
-export class CollisionDetector {
+export abstract class CollisionDetector {
 
     private pos: Iposition;
     readonly tubePolygon: Polygon;
     private merioPolygon!: Polygon;
 
-    constructor(pos: Iposition) {
+    protected constructor(pos: Iposition) {
         this.pos = pos;
 
         this.tubePolygon = new SAT.Polygon(new SAT.Vector(), [
@@ -37,8 +37,12 @@ export class CollisionDetector {
         let response = new SAT.Response();
         SAT.testPolygonPolygon(this.merioPolygon, this.tubePolygon, response);
         //console.log(response);
-        return response.overlap === 0 && response.a;
+
+        return this.handleResponse(response);
     }
+
+    protected abstract handleResponse(res: SAT.Response): boolean;
+
 
     public init(): ICollision {
         return {

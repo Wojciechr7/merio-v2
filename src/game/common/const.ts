@@ -18,6 +18,10 @@ export const SPRITES = {
     JUMP: {
         x: 124,
         y: 215
+    },
+    TUBE: {
+        x: 392,
+        y: 320
     }
 };
 

@@ -16,7 +16,7 @@ export default class BoardController {
         model.Controller = this;
         model.View = view;
         this.view.merioImage.onload = () => {
-            this.view.drawMerio(this.model.MerioPos);
+            this.view.drawBoard(this.model.MerioPos);
         };
 
 

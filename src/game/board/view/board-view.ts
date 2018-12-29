@@ -5,7 +5,7 @@ import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight}
 import {Subscription} from "rxjs";
 import BoardModel from "../model/board-model";
 import {Iposition} from "../../common/interfaces/position.interface";
-import {POSITION, SPRITE_SIZE} from "../../common/const";
+import {POSITION, SPRITE_SIZE, SPRITES} from "../../common/const";
 import {WalkSide} from "../../common/interfaces/walk.interface";
 
 
@@ -74,28 +74,26 @@ export default class BoardView {
         this.document = d;
     }
 
-    public clearMerio(walk: WalkSide, pos: Iposition): void {
+    public clearMerio(walk: WalkSide, {x, y}: Iposition): void {
         //console.log('clear');
         const data = {
             ws: walk.side,
-            posx: pos.x - 1,
-            posy: pos.y,
+            posx: x - 1,
+            posy: y,
             size: SPRITE_SIZE.MERIO
         };
         this.canvas.Ctx.clearRect(data.ws * data.posx, data.posy, SPRITE_SIZE.MERIO, SPRITE_SIZE.MERIO + 5);
     }
 
 
-    public drawMerio(pos: Iposition): void {
+    public drawBoard(pos: Iposition): void {
         let data = {
             ws: this.model.Walk.side,
-            asx: this.model.ActualSprite.x,
-            asy: this.model.ActualSprite.y,
-            size: SPRITE_SIZE.MERIO
+            asx: SPRITES.TUBE.x,
+            asy: SPRITES.TUBE.y,
+            size: SPRITE_SIZE.TUBE
         };
-        data.size = SPRITE_SIZE.TUBE;
-        data.asx = 392;
-        data.asy = 320;
+
         this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, POSITION.TUBE.x, POSITION.TUBE.y, data.size, data.size);
 
         data = {
@@ -107,11 +105,11 @@ export default class BoardView {
 
         this.canvas.Ctx.save();
         this.canvas.Ctx.scale(data.ws, 1);
-
-        this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, pos.x, pos.y, data.ws * data.size, data.size);
+        const {x, y} = pos;
+        this.canvas.Ctx.drawImage(this.merioImage, data.asx, data.asy, data.size, data.size, x, y, data.ws * data.size, data.size);
         this.canvas.Ctx.restore();
 
-        requestAnimationFrame(this.drawMerio.bind(this, pos));
+        requestAnimationFrame(this.drawBoard.bind(this, pos));
 
     }
 

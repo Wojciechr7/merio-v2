@@ -11,8 +11,10 @@ import Merio from "./merio";
 import {KeyboardListener} from "../view/keyboard-listener";
 import BoardView from "../view/board-view";
 import {WalkSide} from "../../common/interfaces/walk.interface";
-import {CollisionDetector} from "./collision-detector";
+import {CollisionDetector} from "./collisions/collision-detector";
 import {ICollision} from "../../common/interfaces/collision.interface";
+import CornerDetector from "./collisions/corner-detector";
+import InteriorDetector from "./collisions/interior-detector";
 
 @Injectable()
 export default class BoardModel implements EventProcessor {
@@ -22,7 +24,7 @@ export default class BoardModel implements EventProcessor {
     readonly released: IReleasedKeys;
     private merio: Merio;
     readonly intervals: Iinterval;
-    private collisionDetector: CollisionDetector;
+    private collisionDetectors: Array<CollisionDetector>;
     private collisions: ICollision;
 
 
@@ -43,8 +45,8 @@ export default class BoardModel implements EventProcessor {
         };
 
         this.merio = new Merio(this.released);
-        this.collisionDetector = new CollisionDetector(this.merio.Pos);
-        this.collisions = this.collisionDetector.init();
+        this.collisionDetectors = [new CornerDetector(this.merio.Pos), new InteriorDetector(this.merio.Pos)];
+        this.collisions = this.collisionDetectors[0].init();
 
     }
 
@@ -69,8 +71,8 @@ export default class BoardModel implements EventProcessor {
         this.controller.stopKeypress(listener);
     }
 
-    public stopMerio(listener: KeyboardListener): void {
-        switch (listener.keyName) {
+    public stopMerio({keyName}: KeyboardListener): void {
+        switch (keyName) {
             case 'ArrowLeft':
                 clearTimeout(this.intervals.moveLeftAnimation);
                 this.intervals.moveLeftAnimation = undefined;
@@ -98,20 +100,21 @@ export default class BoardModel implements EventProcessor {
                 console.log(this.intervals);
                 break;
         }
-        if (listener.keyName !== 'ArrowUp') {
+        if (keyName !== 'ArrowUp') {
             this.merio.resetSprite();
         }
     }
 
     private fall(): void {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
-        this.collisions.bottom = !!this.collisionDetector.detect();
-            if (this.merio.fall()) {
-                this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
-            } else {
-                clearTimeout(this.intervals.fall);
-                this.intervals.fall = undefined;
-            }
+        this.collisions.bottom = this.collisionDetectors[0].detect();
+        if (this.merio.fall()) {
+            this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
+        } else {
+            clearTimeout(this.intervals.fall);
+            this.intervals.fall = undefined;
+        }
+
     }
 
     public walkLeftSwitchSprite(): void {
@@ -129,30 +132,33 @@ export default class BoardModel implements EventProcessor {
     }
 
     public walkLeft(): void {
-        this.collisions.right = false;
+
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
 
-        if (!this.collisions.left) {
+        if (!this.collisions.left && !this.collisionDetectors[1].detect()) {
             this.released.left = false;
             this.merio.walkLeft();
         }
-
-        this.collisions.left = !!this.collisionDetector.detect();
+        this.collisions.left = this.collisionDetectors[0].detect();
         this.fallFromObject('left');
+
+
         this.intervals.moveLeft = setTimeout(this.walkLeft.bind(this), FPS.MOVE);
     }
 
     public walkRight(): void {
-        this.collisions.left = false;
+
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
 
-        if (!this.collisions.right) {
+        if (!this.collisions.right && !this.collisionDetectors[1].detect()) {
             this.released.right = false;
             this.merio.walkRight();
         }
 
-        this.collisions.right = !!this.collisionDetector.detect();
+        this.collisions.right = this.collisionDetectors[0].detect();
         this.fallFromObject('right');
+
+
         this.intervals.moveRight = setTimeout(this.walkRight.bind(this), FPS.MOVE);
     }
 
