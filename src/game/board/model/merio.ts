@@ -6,7 +6,6 @@ import {WalkSide} from "../../common/interfaces/walk.interface";
 
 export default class Merio {
 
-
     private actualSprite: Iposition;
     // walkside 1 - right, -1 - left
     readonly walk: WalkSide;

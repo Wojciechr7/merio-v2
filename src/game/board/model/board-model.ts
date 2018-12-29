@@ -1,5 +1,4 @@
 import {Injectable} from '../../../injector';
-import GameService from "../../game-service";
 import BoardController from "../controller/board-controler";
 import {Key} from "../../common/key";
 import {GameEventType, MoveDownEvent, MoveLeftEvent, MoveRightEvent, MoveUpEvent} from "../../common/game-event";
@@ -27,7 +26,7 @@ export default class BoardModel implements EventProcessor {
     private collisions: ICollision;
 
 
-    constructor(private gs?: GameService) {
+    constructor() {
 
         this.intervals = {
             moveLeftAnimation: undefined,
@@ -66,11 +65,11 @@ export default class BoardModel implements EventProcessor {
         }
     }
 
-    public processKeyUpEvent(listener: KeyboardListener) {
+    public processKeyUpEvent(listener: KeyboardListener): void {
         this.controller.stopKeypress(listener);
     }
 
-    public stopMerio(listener: KeyboardListener) {
+    public stopMerio(listener: KeyboardListener): void {
         switch (listener.keyName) {
             case 'ArrowLeft':
                 clearTimeout(this.intervals.moveLeftAnimation);
@@ -104,7 +103,7 @@ export default class BoardModel implements EventProcessor {
         }
     }
 
-    private fall() {
+    private fall(): void {
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
         this.collisions.bottom = !!this.collisionDetector.detect();
             if (this.merio.fall()) {
@@ -115,21 +114,21 @@ export default class BoardModel implements EventProcessor {
             }
     }
 
-    public walkLeftSwitchSprite() {
+    public walkLeftSwitchSprite(): void {
         //console.log('walk left anim');
         this.merio.walkLeftSwitchSprite();
         this.intervals.moveLeftAnimation = setTimeout(this.walkLeftSwitchSprite.bind(this), FPS.WALK);
 
     }
 
-    public walkRightSwitchSprite() {
+    public walkRightSwitchSprite(): void {
         //console.log('walk right anim');
         this.merio.walkRightSwitchSprite();
         this.intervals.moveRightAnimation = setTimeout(this.walkRightSwitchSprite.bind(this), FPS.WALK);
 
     }
 
-    public walkLeft() {
+    public walkLeft(): void {
         this.collisions.right = false;
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
 
@@ -143,7 +142,7 @@ export default class BoardModel implements EventProcessor {
         this.intervals.moveLeft = setTimeout(this.walkLeft.bind(this), FPS.MOVE);
     }
 
-    public walkRight() {
+    public walkRight(): void {
         this.collisions.left = false;
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
 

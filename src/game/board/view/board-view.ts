@@ -1,13 +1,12 @@
 import {Injectable} from '../../../injector';
-import GameService from "../../game-service";
 import Canvas from "./canvas";
 import BoardController from "../controller/board-controler";
-
 import {KeyboardListener, KeyboardUp, KeyboardDown, KeyboardLeft, KeyboardRight} from "./keyboard-listener";
 import {Subscription} from "rxjs";
 import BoardModel from "../model/board-model";
 import {Iposition} from "../../common/interfaces/position.interface";
 import {POSITION, SPRITE_SIZE} from "../../common/const";
+import {WalkSide} from "../../common/interfaces/walk.interface";
 
 
 @Injectable()
@@ -22,8 +21,7 @@ export default class BoardView {
     public merioImage: HTMLImageElement;
 
 
-    constructor(private gs?: GameService) {
-        //this.merioImage = new Image();
+    constructor() {
         this.merioImage = this.document.createElement('img');
         this.merioImage.src = 'https://i.ibb.co/XYBHBRP/merio.png';
 
@@ -53,7 +51,7 @@ export default class BoardView {
         });
     }
 
-    private createSubscription(l: KeyboardListener, i: number) {
+    private createSubscription(l: KeyboardListener, i: number): Subscription {
         return l.keyPress().subscribe((key: boolean) => {
             if (key) {
                 this.model.processEvent(i);
@@ -76,7 +74,7 @@ export default class BoardView {
         this.document = d;
     }
 
-    public clearMerio(walk: any, pos: Iposition) {
+    public clearMerio(walk: WalkSide, pos: Iposition): void {
         //console.log('clear');
         const data = {
             ws: walk.side,

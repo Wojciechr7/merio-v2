@@ -2,20 +2,18 @@ import {Iposition} from "../../common/interfaces/position.interface";
 import SAT from 'sat';
 import {POSITION} from "../../common/const";
 import {ICollision} from "../../common/interfaces/collision.interface";
+import Polygon = SAT.Polygon;
 
 
 export class CollisionDetector {
 
     private pos: Iposition;
-    private tubePolygon: any;
-    private merioPolygon: any;
+    readonly tubePolygon: Polygon;
+    private merioPolygon!: Polygon;
 
     constructor(pos: Iposition) {
         this.pos = pos;
-    }
 
-
-    public detect(): boolean {
         this.tubePolygon = new SAT.Polygon(new SAT.Vector(), [
             new SAT.Vector(POSITION.TUBE.x + 4, POSITION.TUBE.y + 62),
             new SAT.Vector(POSITION.TUBE.x + 4, POSITION.TUBE.y + 29),
@@ -26,6 +24,10 @@ export class CollisionDetector {
             new SAT.Vector(POSITION.TUBE.x + 58, POSITION.TUBE.y + 29),
             new SAT.Vector(POSITION.TUBE.x + 58, POSITION.TUBE.y + 62)
         ]);
+    }
+
+
+    public detect(): boolean {
         this.merioPolygon = new SAT.Polygon(new SAT.Vector(), [
             new SAT.Vector(Math.abs(this.pos.x), this.pos.y + 38),
             new SAT.Vector(Math.abs(this.pos.x), this.pos.y),
