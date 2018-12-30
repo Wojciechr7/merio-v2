@@ -170,23 +170,12 @@ export default class BoardModel implements EventProcessor {
     }
 
     private fallFromObject(side: string): void {
-        if (side === 'right') {
-            if (this.collisions.right && this.merio.jumpedOnTube) {
-                if (this.merio.isJumping()) {
-                    this.collisions.right = false;
-                    this.fall();
-                    this.merio.jumpSwitchSprite();
-                    this.merio.jumpedOnTube = false;
-                }
-            }
-        } else if (side === 'left') {
-            if (this.collisions.left && this.merio.jumpedOnTube) {
-                if (this.merio.isJumping()) {
-                    this.collisions.left = false;
-                    this.fall();
-                    this.merio.jumpSwitchSprite();
-                    this.merio.jumpedOnTube = false;
-                }
+        if (this.collisions[side] && this.merio.jumpedOnTube) {
+            if (this.merio.isJumping()) {
+                this.collisions[side] = false;
+                this.fall();
+                this.merio.jumpSwitchSprite();
+                this.merio.jumpedOnTube = false;
             }
         }
     }

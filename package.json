@@ -25,6 +25,7 @@
   "dependencies": {
     "@types/jsdom": "^12.2.0",
     "@types/sat": "0.0.30",
+    "babel-polyfill": "^6.26.0",
     "canvas": "^2.2.0",
     "imagediff": "^1.0.8",
     "images": "^3.0.1",

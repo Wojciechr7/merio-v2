@@ -2,6 +2,7 @@ import {Iposition} from "../../common/interfaces/position.interface";
 import {CANVAS, POSITION, SPRITE_SIZE, SPRITES} from "../../common/const";
 import {IReleasedKeys} from "../../common/interfaces/released.interface";
 import {WalkSide} from "../../common/interfaces/walk.interface";
+import "babel-polyfill";
 
 
 export default class Merio {
@@ -13,15 +14,14 @@ export default class Merio {
     readonly pos: Iposition;
     private released: IReleasedKeys;
     private jumpHeight: number;
-    private walkAnimationIndex: number;
     public jumpedOnTube: boolean;
     private lastFloor: string;
+    private stepGenerator: IterableIterator<number>;
 
 
     constructor(released: IReleasedKeys) {
         this.released = released;
         this.jumpHeight = 0;
-        this.walkAnimationIndex = 0;
         this.jumpedOnTube = false;
         this.lastFloor = 'from ground';
         this.pos = {...POSITION.START};
@@ -31,6 +31,15 @@ export default class Merio {
         this.actualSprite = {...SPRITES.STAND};
         this.onAir = false;
 
+        this.stepGenerator = this.generator();
+
+    }
+
+    private* generator(): IterableIterator<number> {
+        let index = 0;
+
+        while(true)
+            yield index = index === 2 ? 0 : index + 1;
     }
 
     public isJumping(): boolean {
@@ -119,9 +128,8 @@ export default class Merio {
         const moves = [SPRITES.WALK_1, SPRITES.WALK_2, SPRITES.WALK_3];
 
         if (!this.onAir && this.released.right) {
-            this.actualSprite = {...moves[this.walkAnimationIndex]};
+            this.actualSprite = {...moves[this.stepGenerator.next().value]};
 
-            this.walkAnimationIndex = this.walkAnimationIndex === 2 ? 0 : this.walkAnimationIndex + 1;
         } else if (!this.onAir && !this.released.right){
             this.actualSprite = {...SPRITES.STAND};
         }
@@ -131,9 +139,8 @@ export default class Merio {
         const moves = [SPRITES.WALK_1, SPRITES.WALK_2, SPRITES.WALK_3];
 
         if (!this.onAir && this.released.left) {
-            this.actualSprite = {...moves[this.walkAnimationIndex]};
+            this.actualSprite = {...moves[this.stepGenerator.next().value]};
 
-            this.walkAnimationIndex = this.walkAnimationIndex === 2 ? 0 : this.walkAnimationIndex + 1;
         } else if (!this.onAir && !this.released.left) {
             this.actualSprite = {...SPRITES.STAND};
         }

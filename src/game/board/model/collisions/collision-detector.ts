@@ -11,7 +11,7 @@ export abstract class CollisionDetector {
     readonly tubePolygon: Polygon;
     private merioPolygon!: Polygon;
 
-    protected constructor(pos: Iposition) {
+    constructor(pos: Iposition) {
         this.pos = pos;
 
         this.tubePolygon = new SAT.Polygon(new SAT.Vector(), [
