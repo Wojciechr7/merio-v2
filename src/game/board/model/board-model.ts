@@ -106,8 +106,11 @@ export default class BoardModel implements EventProcessor {
     }
 
     private fall(): void {
+
+        const [corner, interior] = this.collisionDetectors;
+
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
-        this.collisions.bottom = this.collisionDetectors[0].detect();
+        this.collisions.bottom = corner.detect();
         if (this.merio.fall()) {
             this.intervals.fall = setTimeout(this.fall.bind(this), FPS.JUMP / 2);
         } else {
@@ -133,13 +136,15 @@ export default class BoardModel implements EventProcessor {
 
     public walkLeft(): void {
 
+        const [corner, interior] = this.collisionDetectors;
+
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
 
-        if (!this.collisions.left && !this.collisionDetectors[1].detect()) {
+        if (!this.collisions.left && !interior.detect()) {
             this.released.left = false;
             this.merio.walkLeft();
         }
-        this.collisions.left = this.collisionDetectors[0].detect();
+        this.collisions.left = corner.detect();
         this.fallFromObject('left');
 
 
@@ -148,14 +153,16 @@ export default class BoardModel implements EventProcessor {
 
     public walkRight(): void {
 
+        const [corner, interior] = this.collisionDetectors;
+
         this.view.clearMerio(this.merio.Walk, this.merio.Pos);
 
-        if (!this.collisions.right && !this.collisionDetectors[1].detect()) {
+        if (!this.collisions.right && !interior.detect()) {
             this.released.right = false;
             this.merio.walkRight();
         }
 
-        this.collisions.right = this.collisionDetectors[0].detect();
+        this.collisions.right = corner.detect();
         this.fallFromObject('right');
 
 
