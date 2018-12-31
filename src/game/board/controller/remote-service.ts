@@ -12,7 +12,7 @@ export default class RemoteService {
     private socket: Socket;
 
     constructor() {
-        this.socket = io('http://localhost:3000');
+        this.socket = io('https://merio-server.herokuapp.com');
     }
 
     public getKeydownRemote(): Observable<IRemoteEvent> {
