@@ -4,6 +4,7 @@ import Socket = SocketIOClient.Socket;
 import {fromEvent, Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 import {ICommand} from "../../common/interfaces/command.interface";
+import {IRemoteEvent} from "../../common/interfaces/remote-event.interface";
 
 @Injectable()
 export default class RemoteService {
@@ -14,14 +15,24 @@ export default class RemoteService {
         this.socket = io('http://localhost:3000');
     }
 
-    public getKeydownRemote(): Observable<string> {
+    public getKeydownRemote(): Observable<IRemoteEvent> {
         return fromEvent<ICommand>(this.socket, 'move-command')
-            .pipe(map((move: ICommand) => move.command));
+            .pipe(map((move: ICommand) => {
+                return {
+                    command: move.command,
+                    type: 'keydown'
+                }
+            }));
     }
 
-    public getKeyupRemote(): Observable<string> {
+    public getKeyupRemote(): Observable<IRemoteEvent> {
         return fromEvent<ICommand>(this.socket, 'stop-command')
-            .pipe(map((move: ICommand) => move.command));
+            .pipe(map((move: ICommand) => {
+                return {
+                    command: move.command,
+                    type: 'keyup'
+                }
+            }));
     }
 
 }

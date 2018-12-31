@@ -4,6 +4,7 @@ import {Injectable} from "../../../injector";
 import {MoveUpEvent} from "../../common/game-event";
 import {KeyboardListener} from "../view/keyboard-listener";
 import RemoteService from "./remote-service";
+import {IRemoteEvent} from "../../common/interfaces/remote-event.interface";
 
 
 @Injectable()
@@ -20,40 +21,18 @@ export default class BoardController {
             this.view.drawBoard(this.model.MerioPos);
         };
 
-        this.rs.getKeydownRemote().subscribe((command: string) => {
-            console.log(command);
-            // TODO: it is possible to optimize
-            switch (command) {
-                case 'move-right':
-                    document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight'}));
-                    break;
-                case 'move-left':
-                    document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowLeft'}));
-                    break;
-                case 'move-up':
-                    document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp'}));
-                    break;
-                default:
-                    break;
-            }
+        this.rs.getKeydownRemote().subscribe((event: IRemoteEvent) => {
+            this.processRemoteEvent(event);
         });
 
-        this.rs.getKeyupRemote().subscribe((command: string) => {
-            switch (command) {
-                case 'move-right':
-                    document.dispatchEvent(new KeyboardEvent('keyup', {key: 'ArrowRight'}));
-                    break;
-                case 'move-left':
-                    document.dispatchEvent(new KeyboardEvent('keyup', {key: 'ArrowLeft'}));
-                    break;
-                case 'move-up':
-                    document.dispatchEvent(new KeyboardEvent('keyup', {key: 'ArrowUp'}));
-                    break;
-                default:
-                    break;
-            }
+        this.rs.getKeyupRemote().subscribe((event: IRemoteEvent) => {
+            this.processRemoteEvent(event);
         });
 
+    }
+
+    private processRemoteEvent(event: IRemoteEvent) {
+        document.dispatchEvent(new KeyboardEvent(event.type, {key: event.command}));
     }
 
 
